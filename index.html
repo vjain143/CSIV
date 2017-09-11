@@ -1,1 +1,120 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cyber Security Information Visualization</title>
+<!-- Bootstrap -->
+<link href="./css/bootstrap.css" rel="stylesheet">
+<link href="./css/prettify.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="./resources/prettify.js"></script>
+<script src="./js/vis.js"></script>
+<link href="./css/vis.css" rel="stylesheet" type="text/css">
+<script src="./js/imagesNetwork.js"></script>
+<link href="./css/imagesNetwork.css" rel="stylesheet" type="text/css">
+<style>
+body {
+    font-family: Lustria,Georgia,Times,"Times New Roman",serif !important;
+    background: url('../images/crossword.png') /* Background pattern from subtlepatterns.com */
+}
 
+div.contentWrapper {
+    padding:10px;
+}
+div.navbar-wrapper {
+    background-color:#07508E;
+    border-bottom: 3px solid #ffffff;
+    font-size:16px;
+}
+
+
+pre {
+    width:450px;
+    height:552px;
+    overflow:auto;
+}
+#visualization {
+    display:block;
+    margin-left:470px;
+    margin-top:-562px;
+    width:500px;
+    height:552px;
+    border: 1px solid #dddddd;
+    border-radius:4px;
+    background-color:#fcfcfc;
+}
+
+div.textHTMLContent {
+    margin-top:10px;
+    margin-bottom:10px;
+    display:block;
+    width:800px;
+}
+
+
+img.example {
+    border:1px solid #dddddd;
+    width:250px;
+    height:250px;
+    border-radius:10px;
+    margin-top:10px;
+}
+div.exampleTitle {
+    position:relative;
+    top:-7px;
+    width:100%;
+    max-width:250px;
+    height:30px;
+    border: 1px solid #dddddd;
+    background-color: #526b84;
+    color:#ffffff;
+    text-align:center;
+    vertical-align:middle;
+    line-height: 30px;
+    border-bottom-left-radius:5px;
+    border-bottom-right-radius:5px;
+}
+
+a.exampleLink:before {
+    content:'';
+    display:inline-block;
+    margin-left:15px;
+    margin-right:5px;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    border:3px solid rgb(46, 109, 164);
+}
+
+a.exampleLink {
+    padding:15px;
+    display:inline-block;
+    text-decoration: underline;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+</style>
+</head>
+<body onload="loadVis(150);">
+<div class="contentWrapper">
+    <div id="networkContainer" style="height: 4073px;"><div class="vis-network" tabindex="900" style="position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;"><canvas style="position: relative; touch-action: none; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;" width="3320" height="8146"></canvas></div></div>
+    <div id="contentContainer" style="margin-top: -4073px;">
+        <h1>Cyber Security Information Visualization</h1>
+        This page contains visualization which show how to use cyber security information for the quick understanding, please click the button below: <br><br>
+        <h3>STIX</h3>
+        <a class="exampleLink" href="http://visjs.org/examples/network/basicUsage.html">STIX Object Relationship</a><br>
+    	<h3>ATT&CK</h3>
+		<a class="exampleLink" href="http://visjs.org/examples/network/basicUsage.html">ATT&CK PATTERN</a><br>
+		<h3>NIST Control Family</h3>
+		<a class="exampleLink" href="http://visjs.org/examples/network/basicUsage.html">NIST Control Family</a><br>
+</div><br><br><br><br>
+</div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="./js/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="./js/bootstrap.min.js"></script>
+</body></html>
