@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<!-- saved from url=(0051)https://fiddle.jshell.net/Nivaldo/z7W24/show/light/ -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<script type="text/javascript" src="./jquery-2.1.0.js"></script>
+<link rel="stylesheet" type="text/css" href="./result-light.css">
+<script type="text/javascript" src="./d3.v3.min.js"></script>
+<style type="text/css">
+body, html {
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+	background-color: #eee;
+}
+
+.node {
+	cursor: pointer;
+	padding: 5px 0;
+}
+
+.overlay {
+	background-color: #eee;
+}
+
+.doesntHaveKids {
+	display: none;
+}
+
+.node circle.nodeCircle {
+	fill: #ddd;
+	stroke: #bbb;
+	stroke-width: 1px;
+}
+
+.node circle.ping {
+	fill: rgba(255, 0, 0, 0);
+	stroke: rgba(255, 0, 0, 1);
+	stroke-width: 1px;
+}
+
+.node text {
+	font: 11px sans-serif;
+}
+
+.node.selected text {
+	font-weight: bold;
+	background-color: transparent;
+	background-image: -webkit-gradient(linear, left top, right top, from(rgba(0, 0, 0, 0.15)),
+		to(transparent));
+	background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.15),
+		transparent);
+	background-image: -moz-linear-gradient(left, rgba(0, 0, 0, 0.15),
+		transparent);
+}
+
+/*.node.selected circle { stroke-width: 3px; }*/
+.node circle.Deliver {
+	stroke: #003086;
+	fill: #4b84ea;
+}
+
+.node circle.Engage.Promote {
+	stroke: #0048c8;
+	fill: #7da8f5;
+}
+
+.node circle.Play.Experience {
+	stroke: #4386fe;
+	fill: #99bbfa;
+}
+
+.node circle.Support {
+	stroke: #76a7ff;
+	fill: #c0d6ff;
+}
+
+.node circle.Deliver.closed, .node circle.Engage.Promote.closed, .node circle.Play.Experience.closed,
+	.node circle.Support.closed {
+	stroke: #494949;
+	fill: #aaa;
+}
+
+.link {
+	fill: none;
+	stroke: #ccc;
+	stroke-width: 1.5px;
+}
+
+.templink {
+	fill: none;
+	stroke: red;
+	stroke-width: 3px;
+}
+
+.ghostCircle.show {
+	display: block;
+}
+
+.ghostCircle, .activeDrag .ghostCircle {
+	display: none;
+}
+
+.tooltip {
+	position: absolute;
+	top: 5%;
+	right: 0px;
+	text-align: left;
+	min-width: 250px;
+	min-height: 100px;
+	font: 12px sans-serif;
+	pointer-events: none;
+	background-color: transparent;
+	background-image: -webkit-gradient(linear, left top, right top, from(rgba(0, 0, 0, 0.15)),
+		to(transparent));
+	background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.15),
+		transparent);
+	background-image: -moz-linear-gradient(left, rgba(0, 0, 0, 0.15),
+		transparent);
+}
+
+.tooltip span {
+	font-size: 14px;
+	font-weight: bold;
+	display: block;
+	padding: 10px;
+	margin-bottom: 8px;
+	background-color: transparent;
+	background-image: -webkit-gradient(linear, left top, right top, from(rgba(0, 0, 0, 0.15)),
+		to(transparent));
+	background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.15),
+		transparent);
+	background-image: -moz-linear-gradient(left, rgba(0, 0, 0, 0.15),
+		transparent);
+}
+
+.tooltip table {
+	margin-bottom: 8px;
+}
+
+.tooltip th, .tooltip td {
+	padding: 0 0 2px 8px;
+}
+
+.tooltip th {
+	text-align: right;
+}
+
+h1 {
+	position: absolute;
+	top: 0;
+	left: 0;
+	font: 14px sans-serif;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	font-weight: bold;
+	line-height: 14px;
+	padding: 10px;
+	margin: 0;
+	width: 25%;
+	min-width: 250px;
+	color: #000;
+	text-shadow: 1px 1px rgba(255, 255, 255, 0.5);
+	background-color: transparent;
+	background-image: -webkit-gradient(linear, left top, right top, from(rgba(0, 0, 0, 0.15)),
+		to(transparent));
+	background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.15),
+		transparent);
+	background-image: -moz-linear-gradient(left, rgba(0, 0, 0, 0.15),
+		transparent);
+}
+
+#Search {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 5px;
+	width: 25%;
+	min-width: 250px;
+	text-align: right;
+	background-color: transparent;
+	background-image: -webkit-gradient(linear, left top, right top, from(transparent),
+		to(rgba(0, 0, 0, 0.15)));
+	background-image: -webkit-linear-gradient(left, transparent, rgba(0, 0, 0, 0.15));
+	background-image: -moz-linear-gradient(left, transparent, rgba(0, 0, 0, 0.15));
+}
+
+#SearchBox {
+	border: 0;
+	padding: 5px;
+	margin: 0;
+	background-color: rgba(255, 255, 255, 0.9);
+	font-size: 11px;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	border-radius: 0;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+}
+
+*::-webkit-input-placeholder {
+	color: #aaa;
+	line-height: 16px;
+	font-style: normal;
+	font-size: 10px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+
+*::-moz-placeholder {
+	color: #aaa;
+	line-height: 16px;
+	font-style: normal;
+	font-size: 10px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+
+.ui-autocomplete {
+	border: 1px solid #ccc;
+	padding: 5px;
+	max-height: 300px;
+	overflow-y: auto;
+	padding: 0;
+	border-radius: 0;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	-webkit-border-bottom-right-radius: 3px;
+	-webkit-border-bottom-left-radius: 3px;
+	-moz-border-radius-bottomright: 3px;
+	-moz-border-radius-bottomleft: 3px;
+	border-bottom-right-radius: 3px;
+	border-bottom-left-radius: 3px;
+	background-clip: padding-box;
+}
+
+.ui-menu .ui-menu-item a {
+	font-size: 11px;
+	line-height: 11px;
+	padding: 5px 8px;
+	border: 0;
+}
+
+.ui-state-focus, .ui-widget-content .ui-state-focus, .ui-menu .ui-menu-item a.ui-state-focus
+	{
+	background-image: none;
+	border: 0;
+	background-color: #eee;
+	cursor: pointer;
+	padding: 5px 8px;
+	margin: 0;
+}
+</style>
+<title>NVD Control Family Tree</title>
+<script type="text/javascript">
+	//<![CDATA[
+	$(window).load(function() 
+	{
+		// Get JSON data
+		var nodeEnter;
+		var node;
+		var toolTip;
+		var radiusSizeNormal = 2.5;
+		var radiusSizeBig = 4.5;
+		var pingStartSize = 30;
+		treeJSON = d3.json("data.json", function(error, treeData) {
+		var treeData = 
+		{
+			"familyRoot" : null,
+			"name" : "Control Family",
+			"parentName" : null,
+			"children" : [ 
+							{ 
+								"familyRoot" : true,
+								"name" : "ACCESS CONTROL",
+								"parentName" : "Control Family",
+								"children" : [ 
+													{"familyRoot" : null,"name" : "ACCESS CONTROL POLICY AND PROCEDURES (AC-1)", "parentName" : "ACCESS CONTROL", "parentPreFix" : "AC", "children" : []}, 
+													{"familyRoot" : null,"name" : "ACCOUNT MANAGEMENT (AC-2)", "parentName" : "ACCESS CONTROL", "parentPreFix" : "AC", "children" : []} 
+											 ]
+							},
+							{ 
+								"familyRoot" : true,
+								"name" : "Audit and Accountability (AU)",
+								"children" : [ 
+													{"familyRoot" : null,"name" : "","children" : []}
+											 ]
+							},
+							{ 
+								"familyRoot" : true,
+								"name" : "Awareness and Training (AT)",
+								"children" : [ 
+													{"familyRoot" : null,"name" : "","children" : []}
+											 ]
+							},
+							{ 
+								"familyRoot" : true,
+								"name" : "Configuration Management (CM)",
+								"children" : [ 
+													{"familyRoot" : null,"name" : "","children" : []}
+											 ]
+							},
+							{ 
+								"familyRoot" : true,
+								"name" : "Contingency Planning (CP)",
+								"children" : [ 
+													{"familyRoot" : null,"name" : "","children" : []}
+											 ]
+							},
+							{ 
+								"familyRoot" : true,
+								"name" : "Identification and Authentication (IA)",
+								"children" : [ 
+													{"familyRoot" : null,"name" : "","children" : []}
+											 ]
+							},
+							{ 
+								"familyRoot" : true,
+								"name" : "Incident Response (IR)",
+								"children" : [ 
+													{"familyRoot" : null,"name" : "","children" : []}
+											 ]
+							}
+						 ]
+		};
+
+		// Calculate total nodes, max label length
+		var totalNodes = 0;
+		var maxLabelLength = 0;
+		// variables for drag/drop
+		var selectedNode = null;
+		var draggingNode = null;
+		// panning variables
+		var panSpeed = 200;
+		var panBoundary = 10; // Within 20px from edges will pan when dragging.
+		// Misc. variables
+		var i = 0;
+		var duration = 750;
+		var root;
+		var flatTreeData = [];
+
+		// size of the diagram
+		var viewerWidth = $(document).width();
+		var viewerHeight = $(document).height();
+
+		var tree = d3.layout.tree().size([ viewerHeight,	viewerWidth ]);
+		toolTip = d3.select("body").append("div").attr("class","tooltip").style("opacity",0);
+
+		// define a d3 diagonal projection for use by the node paths later on.
+		var diagonal = d3.svg.diagonal().projection(function(d) {return [ d.y, d.x ];});
+
+		function getRandomInt(min, max) { return Math.floor(Math.random()	* (max - min + 1) + min);}
+
+											// A recursive helper function for performing some setup by walking through all nodes
+											function visit(parent, visitFn,
+													childrenFn) {
+												parent.radius = radiusSizeNormal;
+												parent.isSelected = false; //to know if its selected
+												if (!parent)
+													return;
+
+												visitFn(parent);
+
+												var children = childrenFn(parent);
+												if (children) {
+													var count = children.length;
+													for (var i = 0; i < count; i++) {
+														//while we're visiting all the children, lets give the children a way to find their parent.
+														children[i].parent = parent;
+														visit(children[i],
+																visitFn,
+																childrenFn);
+													}
+												} else {
+													var first = [ "John" ];
+													var last = [ "Doe" ];
+													var status = [
+															"Not Started",
+															"In Progress",
+															"Completed" ];
+													//add this random stuff
+													parent.owner = first[getRandomInt(
+															0, first.length - 1)]
+															+ " "
+															+ last[getRandomInt(
+																	0,
+																	last.length - 1)];
+													parent.status = status[getRandomInt(
+															0,
+															status.length - 1)];
+													parent.dueDate = new Date(
+															getRandomInt(2013,
+																	2015),
+															getRandomInt(0, 10),
+															getRandomInt(1, 25));
+													;
+													parent.duration = getRandomInt(
+															0, 15)
+															+ " days";
+													parent.isLeaf = true; //to know if its an end
+												}
+											}
+
+											// Call visit function to establish maxLabelLength
+											visit(
+													treeData,
+													function(d) {
+														totalNodes++;
+														maxLabelLength = Math
+																.max(
+																		d.name.length,
+																		maxLabelLength);
+
+													},
+													function(d) {
+														return d.children
+																&& d.children.length > 0 ? d.children
+																: null;
+													});
+
+	// sort the tree according to the node names
+
+	function sortTree() 
+	{
+		tree.sort(function(a, b) {
+
+					//uh, ashok wants Engage / Promote to be first in the list but everything else should be alphabetical.
+					if (a.name
+							.toLowerCase()
+							.indexOf(
+									"Engage / Promote")) {
+						return -1;
+					}
+
+					return b.name
+							.toLowerCase() < a.name
+							.toLowerCase() ? 1
+							: -1;
+				});
+	}
+											// Sort the tree initially incase the JSON isn't in a sorted order.
+											sortTree();
+
+											// TODO: Pan function, can be better implemented.
+
+											function pan(domNode, direction) {
+												var speed = panSpeed;
+												if (panTimer) {
+													clearTimeout(panTimer);
+													translateCoords = d3
+															.transform(svgGroup
+																	.attr("transform"));
+													if (direction == 'left'
+															|| direction == 'right') {
+														translateX = direction == 'left' ? translateCoords.translate[0]
+																+ speed
+																: translateCoords.translate[0]
+																		- speed;
+														translateY = translateCoords.translate[1];
+													} else if (direction == 'up'
+															|| direction == 'down') {
+														translateX = translateCoords.translate[0];
+														translateY = direction == 'up' ? translateCoords.translate[1]
+																+ speed
+																: translateCoords.translate[1]
+																		- speed;
+													}
+													scaleX = translateCoords.scale[0];
+													scaleY = translateCoords.scale[1];
+													scale = zoomListener
+															.scale();
+													svgGroup
+															.transition()
+															.attr(
+																	"transform",
+																	"translate("
+																			+ translateX
+																			+ ","
+																			+ translateY
+																			+ ")scale("
+																			+ scale
+																			+ ")");
+													d3
+															.select(domNode)
+															.select('g.node')
+															.attr(
+																	"transform",
+																	"translate("
+																			+ translateX
+																			+ ","
+																			+ translateY
+																			+ ")");
+													zoomListener
+															.scale(zoomListener
+																	.scale());
+													zoomListener.translate([
+															translateX,
+															translateY ]);
+													panTimer = setTimeout(
+															function() {
+																pan(domNode,
+																		speed,
+																		direction);
+															}, 50);
+												}
+											}
+
+											// Define the zoom function for the zoomable tree
+
+											function zoom() {
+												console
+														.log("d3.event.translate: "
+																+ d3.event.translate);
+												console.log("d3.event.scale: "
+														+ d3.event.scale);
+												console
+														.log("---------------------------------------------");
+												svgGroup
+														.attr(
+																"transform",
+																"translate("
+																		+ d3.event.translate
+																		+ ")scale("
+																		+ d3.event.scale
+																		+ ")");
+											}
+
+											// define the zoomListener which calls the zoom function on the "zoom" event constrained within the scaleExtents
+											var zoomListener = d3.behavior
+													.zoom().scaleExtent(
+															[ 0.1, 3 ]).on(
+															"zoom", zoom);
+
+											// define the baseSvg, attaching a class for styling and the zoomListener
+											var baseSvg = d3.select(
+													"#tree-container").append(
+													"svg").attr("width",
+													viewerWidth).attr("height",
+													viewerHeight).attr("class",
+													"overlay").call(
+													zoomListener);
+
+											function endDrag() {
+												selectedNode = null;
+												d3.selectAll('.ghostCircle')
+														.attr('class',
+																'ghostCircle');
+												d3.select(domNode).attr(
+														'class', 'node');
+												// now restore the mouseover event or we won't be able to drag a 2nd time
+												d3.select(domNode).select(
+														'.ghostCircle').attr(
+														'pointer-events', '');
+												updateTempConnector();
+												if (draggingNode !== null) {
+													update(root);
+													centerNode(draggingNode);
+													draggingNode = null;
+												}
+											}
+
+											// Helper functions for collapsing and expanding nodes.
+
+											function collapse(d) 
+											{
+												if (d.children) {
+													d._children = d.children;
+													d._children
+															.forEach(collapse);
+													d.children = null;
+												}
+											}
+
+											function expand(d) 
+											{
+												if (d._children) {
+													d.children = d._children;
+													d.children.forEach(expand);
+													d._children = null;
+												}
+											}
+
+											var overCircle = function(d) {
+												selectedNode = d;
+												updateTempConnector();
+											};
+											var outCircle = function(d) {
+												selectedNode = null;
+												updateTempConnector();
+											};
+
+											// Function to update the temporary connector indicating dragging affiliation
+											var updateTempConnector = function() {
+												var data = [];
+												if (draggingNode !== null
+														&& selectedNode !== null) {
+													// have to flip the source coordinates since we did this for the existing connectors on the original tree
+													data = [ {
+														source : {
+															x : selectedNode.y0,
+															y : selectedNode.x0
+														},
+														target : {
+															x : draggingNode.y0,
+															y : draggingNode.x0
+														}
+													} ];
+												}
+												var link = svgGroup.selectAll(
+														".templink").data(data);
+
+												link
+														.enter()
+														.append("path")
+														.attr("class",
+																"templink")
+														.attr(
+																"d",
+																d3.svg
+																		.diagonal())
+														.attr('pointer-events',
+																'none');
+
+												link.attr("d", d3.svg
+														.diagonal());
+
+												link.exit().remove();
+											};
+
+											// Function to center node when clicked/dropped so node doesn't get lost when collapsing/moving with large amount of children.
+
+											function centerToPosition(x0, y0,
+													newScale) {
+
+												if (typeof newScale == "undefined") {
+													scale = zoomListener
+															.scale();
+												} else {
+													scale = newScale;
+												}
+												var x = y0 * -1; //not sure why this is.. but it is
+												var y = x0 * -1;
+												x = x * scale + viewerWidth / 2;
+												y = y * scale + viewerHeight
+														/ 2;
+												d3
+														.select('g')
+														.transition()
+														.duration(duration)
+														.attr(
+																"transform",
+																"translate("
+																		+ x
+																		+ ","
+																		+ y
+																		+ ")scale("
+																		+ scale
+																		+ ")");
+												zoomListener.scale(scale);
+												zoomListener
+														.translate([ x, y ]);
+											}
+
+											function centerNode(source,
+													newScale) {
+
+												if (typeof newScale == "undefined") {
+													scale = zoomListener
+															.scale();
+												} else {
+													scale = newScale;
+												}
+												x = -source.y0;
+												y = -source.x0;
+												x = x * scale + viewerWidth / 2;
+												y = y * scale + viewerHeight
+														/ 2;
+												d3
+														.select('g')
+														.transition()
+														.duration(duration)
+														.attr(
+																"transform",
+																"translate("
+																		+ x
+																		+ ","
+																		+ y
+																		+ ")scale("
+																		+ scale
+																		+ ")");
+												zoomListener.scale(scale);
+												zoomListener
+														.translate([ x, y ]);
+											}
+
+											// Toggle children function
+
+											function toggleChildren(d) {
+												if (d.children) {
+													d._children = d.children;
+													d.children = null;
+												} else if (d._children) {
+													d.children = d._children;
+													d._children = null;
+												}
+												return d;
+											}
+
+											// Toggle children on click.
+
+											function click(d, x, y, collapsed) 
+											{
+												if (d3.event != null && d3.event.defaultPrevented)
+													return; // click suppressed
+												node
+														.classed(
+																"selected",
+																function(d, i) {
+																	d.isSelected = false;
+																	return false;
+																});
+
+												d.isSelected = true;
+												if (typeof collapsed == "undefined"
+														|| collapsed == true) {
+													d = toggleChildren(d);
+												}
+
+												update(d);
+
+												centerNode(d, 3);
+												if (d.isLeaf == true) 
+												{
+													toolTip.transition().duration(200).style("opacity", .9);
+													//parent.owner = first[getRandomInt(0, first.length - 1)] + " " + last[getRandomInt(0, last.length - 1)];
+													//parent.status = getRandomInt(0, 100) + "%";
+													//parent.dueDate = new Date(getRandomInt(2013, 2015), getRandomInt(0, 10), getRandomInt(1, 25));;
+													//parent.duration = getRandomInt(0, 15) + " days";
+
+													var curr_date = d.dueDate.getDate();
+													var curr_month = d.dueDate.getMonth() + 1; //Months are zero based
+													var curr_year = d.dueDate.getFullYear();
+													var full_date = curr_month+ "/" + curr_date	+ "/" + curr_year;
+
+													var html = "<span>"	+ d.name + "</span>";
+
+													html += "<table class='TTContent'>";
+													html += "<tr>";
+													html += "<th>Parent</th>";
+													html += "<td>" + d.parentName + "</td>";
+													html += "</tr>";
+													html += "<tr>";
+													html += "<th>parentPreFix</th>";
+													html += "<td>" + d.parentPreFix
+															+ "</td>";
+													html += "</tr>";
+													html += "<tr>";
+													html += "<th>Due Date</th>";
+													html += "<td>" + full_date
+															+ "</td>";
+													html += "</tr>";
+													html += "<tr>";
+													html += "<th>Duration</th>";
+													html += "<td>" + d.duration
+															+ "</td>";
+													html += "</tr>";
+													html += "</table>";
+
+													toolTip.html(html);
+												} else {
+													toolTip
+															.transition()
+															.duration(200)
+															.style("opacity", 0);
+												}
+											}
+
+											function update(source) {
+												// Compute the new height, function counts total children of root node and sets tree height accordingly.
+												// This prevents the layout looking squashed when new nodes are made visible or looking sparse when nodes are removed
+												// This makes the layout more consistent.
+												var levelWidth = [ 1 ];
+												var childCount = function(
+														level, n) {
+
+													if (n.children
+															&& n.children.length > 0) {
+														if (levelWidth.length <= level + 1)
+															levelWidth.push(0);
+
+														levelWidth[level + 1] += n.children.length;
+														n.children
+																.forEach(function(
+																		d) {
+																	childCount(
+																			level + 1,
+																			d);
+																});
+													}
+												};
+												childCount(0, root);
+												var newHeight = d3
+														.max(levelWidth) * 25; // 25 pixels per line  
+												tree = tree.size([ newHeight,
+														viewerWidth ]);
+
+												// Compute the new tree layout.
+												var nodes = tree.nodes(root)
+														.reverse(), links = tree
+														.links(nodes);
+
+												// Set widths between levels based on maxLabelLength.
+												nodes
+														.forEach(function(d) {
+															d.y = (d.depth * (maxLabelLength * 10)); //maxLabelLength * 10px
+															// alternatively to keep a fixed scale one can set a fixed depth per level
+															// Normalize for fixed-depth by commenting out below line
+															// d.y = (d.depth * 500); //500px per level.
+														});
+
+												// Update the nodes…
+												node = svgGroup
+														.selectAll("g.node")
+														.data(
+																nodes,
+																function(d) {
+																	return d.id
+																			|| (d.id = ++i);
+																})
+														.classed(
+																"selected",
+																function(d) {
+																	return d.isSelected;
+																});
+
+												// Enter any new nodes at the parent's previous position.
+												nodeEnter = node
+														.enter()
+														.append("g")
+														//.call(dragListener)
+														.attr("class", "node")
+														.attr(
+																"transform",
+																function(d) {
+																	return "translate("
+																			+ source.y0
+																			+ ","
+																			+ source.x0
+																			+ ")";
+																}).on('click',
+																click);
+
+												nodeEnter
+														.append("circle")
+														.attr(
+																'class',
+																function(d) {
+
+																	var circleClass = 'nodeCircle ';
+
+																	var target = d;
+
+																	//for the styling requirements, we need to get the children of the main branches to get the right color.
+																	//we do that here but going up the parent chain, and figuring out if/when we hit the familyRoot and inherit their class.
+																	var isMain = target.familyRoot == true ? 1
+																			: 0;
+																	var hasParent = typeof target.parent != "undefined" ? 1
+																			: 0;
+
+																	while (isMain
+																			^ hasParent) {
+																		target = target.parent;
+																		isMain = target.familyRoot == true ? 1
+																				: 0;
+																		hasParent = typeof target.parent != "undefined" ? 1
+																				: 0;
+																	}
+
+																	if (target.familyRoot == true) {
+																		circleClass += target.name
+																				+ " ";
+																	}
+
+																	if (target._children == true) {
+																		circleClass += "closed"
+																				+ " ";
+																	}
+
+																	return circleClass;
+																}).attr("r", 0);
+
+												nodeEnter.append("circle")
+														.attr("class", "ping")
+														.attr("r", 0).style(
+																"opacity", 0);
+
+												nodeEnter
+														.append("text")
+														.attr(
+																"x",
+																function(d) {
+																	return d.children
+																			|| d._children ? -10
+																			: 10;
+																})
+														.attr("dy", ".35em")
+														.attr('class',
+																'nodeText')
+														.attr(
+																"text-anchor",
+																function(d) {
+																	return d.children
+																			|| d._children ? "end"
+																			: "start";
+																})
+														.text(function(d) {
+															return d.name;
+														}).style(
+																"fill-opacity",
+																0);
+
+												//nodeEnter.append("svg:image").attr("xlink:href","arrow-white.svg")//VIVEK
+												//.attr("x", -1.5)
+												//.attr("y", -4)
+												//.attr('width', 4.5)
+												//.attr('height', 9);
+
+												node
+														.select("image")
+														.classed(
+																"kidIndicator",
+																true)
+														.classed(
+																"doesntHaveKids",
+																function(d) {
+																	return d._children ? false
+																			: true;
+																});
+
+												node
+														.select(".kidIndicator")
+														.attr(
+																"width",
+																function(d, i) {
+																	if (d.isSelected) {
+																		return 4.5;
+																	}
+																	return 3;
+																})
+														.attr(
+																"height",
+																function(d, i) {
+																	if (d.isSelected) {
+																		return 7;
+																	}
+																	return 2.5;
+																})
+														.attr(
+																"x",
+																function(d, i) {
+																	if (d.isSelected) {
+																		return -1.5;
+																	}
+																	return -1.25;
+																})
+														.attr(
+																"y",
+																function(d, i) {
+																	if (d.isSelected) {
+																		return -4;
+																	}
+																	return -2;
+																});
+
+												// Update the text to reflect whether node has children or not.
+												node
+														.select('text')
+														.attr(
+																"x",
+																function(d) {
+																	return d.children
+																			|| d._children ? -10
+																			: 10;
+																})
+														.attr(
+																"text-anchor",
+																function(d) {
+																	return d.children
+																			|| d._children ? "end"
+																			: "start";
+																})
+														.text(function(d) {
+															return d.name;
+														});
+
+												// Change the circle fill depending on whether it has children and is collapsed
+												node
+														.select(
+																"circle.nodeCircle")
+														.attr(
+																"r",
+																function(d, i) {
+																	if (d.isSelected) {
+																		return radiusSizeBig;
+																	}
+																	return radiusSizeNormal;
+																});
+
+												// Transition nodes to their new position.
+												var nodeUpdate = node
+														.transition()
+														.duration(duration)
+														.attr(
+																"transform",
+																function(d) {
+																	return "translate("
+																			+ d.y
+																			+ ","
+																			+ d.x
+																			+ ")";
+																});
+
+												// Fade the text in
+												nodeUpdate.select("text")
+														.style("fill-opacity",
+																1);
+
+												// Transition exiting nodes to the parent's new position.
+												var nodeExit = node
+														.exit()
+														.transition()
+														.duration(duration)
+														.attr(
+																"transform",
+																function(d) {
+																	return "translate("
+																			+ source.y
+																			+ ","
+																			+ source.x
+																			+ ")";
+																}).remove();
+
+												nodeExit.select("circle").attr(
+														"r", 0);
+
+												nodeExit.select("text").style(
+														"fill-opacity", 0);
+
+												// Update the links…
+												var link = svgGroup.selectAll(
+														"path.link").data(
+														links, function(d) {
+															return d.target.id;
+														});
+
+												// Enter any new links at the parent's previous position.
+												link.enter()
+														.insert("path", "g")
+														.attr("class", "link")
+														.attr("d", function(d) {
+															var o = {
+																x : source.x0,
+																y : source.y0
+															};
+															return diagonal({
+																source : o,
+																target : o
+															});
+														});
+
+												// Transition links to their new position.
+												link.transition().duration(
+														duration).attr("d",
+														diagonal);
+
+												// Transition exiting nodes to the parent's new position.
+												link.exit().transition()
+														.duration(duration)
+														.attr("d", function(d) {
+															var o = {
+																x : source.x,
+																y : source.y
+															};
+															return diagonal({
+																source : o,
+																target : o
+															});
+														}).remove();
+
+												// Stash the old positions for transition.
+												nodes.forEach(function(d) {
+													d.x0 = d.x;
+													d.y0 = d.y;
+												});
+											}
+
+											var searchInput = d3.select(
+													"#SearchBox").on("keyup",
+													keyuped);
+
+											function keyuped() {
+												UnselectNode();
+												if (d3.event.keyCode === 27) {
+													this.value = "";
+													this.blur();
+												}
+												search(this.value.trim());
+											}
+
+											function search(value) {
+												toolTip.transition().duration(
+														200)
+														.style("opacity", 0);
+												if (value) {
+													var re = new RegExp(
+															"\\b"
+																	+ d3
+																			.requote(value),
+															"i");
+
+													node
+															.classed(
+																	"selected",
+																	function(d) {
+																		var match = re
+																				.test(d.name);
+
+																		if (match) {
+																			d.isSelected = true;
+																		} else {
+																			d.isSelected = false;
+																		}
+
+																		return match;
+																	});
+
+													ClearCircles();
+
+													var matches = d3
+															.selectAll(".selected");
+
+													matches
+															.selectAll(".ping")
+															.attr("r",
+																	pingStartSize);
+													matches
+															.selectAll(".ping")
+															.transition()
+															.duration(250)
+															.style("opacity", 9)
+															.attr("r", 0)
+															.each(
+																	"end",
+																	function() {
+																		d3
+																				.select(
+																						this)
+																				.style(
+																						"opacity",
+																						0);
+																	});
+													if (matches.empty()) {
+														centerToPosition(0, 0,
+																1); //reset
+													} else if (matches.size() === 1) {
+														click(matches.datum(),
+																0, 0, false);
+													} else {
+														var xExtent = d3
+																.extent(
+																		matches
+																				.data(),
+																		function(
+																				d) {
+																			return d.x0;
+																		});
+														var yExtent = d3
+																.extent(
+																		matches
+																				.data(),
+																		function(
+																				d) {
+																			return d.y0;
+																		});
+
+														//note: the "x" values are used to set VERTICAL position,
+														//while the "y" values are setting the HORIZONTAL position
+
+														var potentialXZoom = viewerHeight
+																/ (xExtent[1]
+																		- xExtent[0] + 10);
+														var potentialYZoom = viewerWidth
+																/ (yExtent[1]
+																		- yExtent[0] + 100);
+														//The "20" and "150" are for height and width of the labels
+														//You could (should) replace with calculated values 
+														//or values stored in variables
+
+														centerToPosition(
+																(xExtent[0] + xExtent[1]) / 2,
+																(yExtent[0] + yExtent[1]) / 2,
+																Math
+																		.min(
+																				potentialXZoom,
+																				potentialYZoom));
+													}
+												} else {
+													UnselectNode();
+												}
+											}
+
+											function GetAveragePosition(points) {
+												var xs = [];
+												var ys = [];
+
+												points.each(function(d, i) {
+													xs.push(d.x0);
+													ys.push(d.y0);
+												});
+
+												var position = {
+													x : GetAverageFromArray(xs),
+													y : GetAverageFromArray(ys)
+												};
+
+												return position;
+											}
+
+											function GetAverageFromArray(array) {
+												var sum = GetSumFromArray(array);
+												var average = array.length == 0 ? 0
+														: sum / array.length;
+
+												var averageRatio
+
+												return average;
+											}
+
+											function GetSumFromArray(array) {
+												var sum = 0;
+												for (var i = 0; i < array.length; i++) {
+													sum += array[i];
+												}
+												return sum;
+											}
+
+											function UnselectNode() {
+												centerToPosition(root.x0,
+														root.y0, 1);
+												RemoveSelection();
+												ClearCircles();
+											}
+
+											function RemoveSelection() {
+												node.classed("selected", false);
+
+												node.each(function(d, i) {
+													d.isSelected = false;
+												});
+											}
+
+											function ClearCircles() {
+												node
+														.selectAll(
+																"circle.nodeCircle")
+														.attr(
+																"r",
+																function(d, i) {
+																	if (d.isSelected) {
+																		return radiusSizeBig;
+																	}
+
+																	return radiusSizeNormal;
+																});
+											}
+
+											// Append a group which holds all nodes and which the zoom Listener can act upon.
+											var svgGroup = baseSvg.append("g");
+
+											// Define the root
+											root = treeData;
+											root.x0 = viewerHeight / 2;
+											root.y0 = 0;
+
+											// Layout the tree initially and center on the root node.
+											update(root);
+											centerNode(root);
+										});
+					});//]]>
+</script>
+</head>
+<body>
+	<h1>NVD Control Family Tree</h1>
+	<div id="Search">
+		<input id="SearchBox" type="text" placeholder="Search">
+	</div>
+	<div id="tree-container"></div>
+	<script>
+		// tell the embed parent frame the height of the content
+		if (window.parent && window.parent.parent) {
+			window.parent.parent.postMessage([ "resultsFrame", {height : document.body.getBoundingClientRect().height,	slug : "z7W24"	} ], "*")
+		}
+	</script>
+</body>
+</html>

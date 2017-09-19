@@ -1,0 +1,19 @@
+{
+	"mainBranch" : null,
+	"name" : "Control Family",
+	"children" : [ {
+		"mainBranch" : true,
+		"name" : "Parent 1",
+		"children" : [ {
+			"mainBranch" : null,
+			"name" : "1Child A",
+			"children" : []
+		}, {
+			"mainBranch" : null,
+			"name" : "1Child B",
+			"children" : []
+		} ]
+	}, {"mainBranch" : true, "name" : "Parent 2", "children" : 
+		[ {	"mainBranch" : null, "name" : "2Child A", "children" : [] }, { "mainBranch" : null, "name" : "2Child B", "children" : [] } ]
+		} ]
+}
